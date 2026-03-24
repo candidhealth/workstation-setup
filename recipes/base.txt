@@ -1,0 +1,11 @@
+# Base: everything needed to run Claude Code via Vertex AI.
+header
+shell-detect
+banner
+xcode
+homebrew
+gcloud
+gcloud-auth
+vertex-env
+claude
+footer
