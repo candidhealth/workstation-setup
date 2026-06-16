@@ -1,0 +1,2 @@
+# Built artifacts live on the dist branch, not main.
+dist/

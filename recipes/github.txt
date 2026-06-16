@@ -1,0 +1,12 @@
+# base plus GitHub CLI
+header
+shell-detect
+banner
+xcode
+homebrew
+github
+gcloud
+gcloud-auth
+vertex-env
+claude
+footer

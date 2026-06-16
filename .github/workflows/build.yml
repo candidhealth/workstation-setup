@@ -1,0 +1,61 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'fragments/**'
+      - 'recipes/**'
+      - 'build.sh'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-dist
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint build.sh
+        run: shellcheck build.sh
+
+      - name: Build recipes
+        run: ./build.sh
+
+      - name: Lint generated scripts
+        run: shellcheck dist/*.sh
+
+      - name: Publish built scripts to dist branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Stash artifacts outside the work tree before switching branches.
+          out="$(mktemp -d)"
+          cp dist/*.sh "$out/"
+
+          if git ls-remote --heads origin dist | grep -q 'refs/heads/dist'; then
+            git fetch origin dist
+            git worktree add pub FETCH_HEAD
+            git -C pub checkout -B dist
+          else
+            git worktree add --orphan -b dist pub
+          fi
+
+          rm -f pub/*.sh
+          cp "$out"/*.sh pub/
+          git -C pub add -A
+          if git -C pub diff --cached --quiet; then
+            echo "No changes to publish."
+          else
+            git -C pub commit -m "build from ${GITHUB_SHA}"
+            git -C pub push origin HEAD:dist
+          fi
