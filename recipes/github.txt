@@ -7,6 +7,6 @@ homebrew
 github
 gcloud
 gcloud-auth
-vertex-env
+profile
 claude
 footer

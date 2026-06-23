@@ -37,11 +37,11 @@ Both scripts are **idempotent** — safe to re-run. Already-installed tools are 
 
 ## Notes
 
-- Scripts detect your shell (zsh/bash) and append configuration to the appropriate rc file
-- Homebrew shellenv is added to your profile (`~/.zprofile` or `~/.bash_profile`) so it loads in login shells
+- Stable env vars and PATH are written to your login profile (`~/.zprofile` or `~/.bash_profile`) as a single managed block, leaving the interactive rc file (`~/.zshrc`) untouched. Re-running rewrites the block in place
+- On zsh, PATH is set with a deduped `path=()` array; no `brew shellenv` / `path.bash.inc` eval is left behind
 - Google Cloud auth and GitHub auth open a browser for sign-in
 - Claude Code is configured to use Vertex AI with the `candid-v0` project
-- After running, open a new terminal (or `source ~/.zshrc`) to pick up all env vars
+- After running, open a new terminal (or `source ~/.zprofile`) to pick up all env vars
 
 ## Developing
 
