@@ -6,6 +6,6 @@ xcode
 homebrew
 gcloud
 gcloud-auth
-vertex-env
+profile
 claude
 footer
